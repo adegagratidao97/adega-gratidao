@@ -2,18 +2,45 @@ import Link from 'next/link'
 import { Plus, TrendingUp, ClipboardList, Wallet } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { OrderCard } from '@/components/orders/OrderCard'
-import { listOpenOrders, getDashboardStats } from '@/services/orders.service'
+import { createClient } from '@/lib/supabase/server'
 import { formatarMoeda } from '@/lib/utils/formatters'
 import { cn } from '@/lib/utils'
+import type { Order } from '@/types/database'
 
 export default async function HomePage() {
-  const [ordersRes, statsRes] = await Promise.all([
-    listOpenOrders(),
-    getDashboardStats(),
+  const supabase = await createClient()
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const [ordersRes, fechadasHojeRes, abertasRes] = await Promise.all([
+    supabase
+      .from('orders')
+      .select('*, client:clients(*)')
+      .eq('status', 'aberta')
+      .order('opened_at', { ascending: false }),
+    supabase
+      .from('orders')
+      .select('status, total')
+      .gte('closed_at', today.toISOString())
+      .in('status', ['paga', 'fiado']),
+    supabase
+      .from('orders')
+      .select('id')
+      .eq('status', 'aberta'),
   ])
 
-  const orders = ordersRes.data ?? []
-  const stats = statsRes.data
+  const orders = (ordersRes.data ?? []) as Order[]
+  const fechadasHoje = fechadasHojeRes.data ?? []
+
+  const totalVendido = fechadasHoje
+    .filter((o: { status: string; total: number }) => o.status === 'paga')
+    .reduce((s: number, o: { total: number }) => s + o.total, 0)
+
+  const totalFiado = fechadasHoje
+    .filter((o: { status: string; total: number }) => o.status === 'fiado')
+    .reduce((s: number, o: { total: number }) => s + o.total, 0)
+
+  const comandasAbertas = abertasRes.data?.length ?? 0
 
   return (
     <div className="space-y-6">
@@ -46,7 +73,7 @@ export default async function HomePage() {
             </span>
           </div>
           <p className="text-base md:text-lg font-bold text-foreground tabular-nums leading-tight">
-            {formatarMoeda(stats?.totalVendido ?? 0)}
+            {formatarMoeda(totalVendido)}
           </p>
         </div>
 
@@ -58,7 +85,7 @@ export default async function HomePage() {
             </span>
           </div>
           <p className="text-base md:text-lg font-bold text-foreground tabular-nums leading-tight">
-            {stats?.comandasAbertas ?? 0}
+            {comandasAbertas}
           </p>
         </div>
 
@@ -70,7 +97,7 @@ export default async function HomePage() {
             </span>
           </div>
           <p className="text-base md:text-lg font-bold text-foreground tabular-nums leading-tight">
-            {formatarMoeda(stats?.totalFiado ?? 0)}
+            {formatarMoeda(totalFiado)}
           </p>
         </div>
       </div>
