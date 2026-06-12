@@ -221,6 +221,30 @@ export default function ClienteDetalhePage() {
                 autoFocus
               />
             </div>
+
+            {transactions.filter(tx => tx.type === 'charge').length > 0 && (
+              <div className="border-t border-border pt-4 space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  O que o cliente pegou
+                </p>
+                <div className="divide-y divide-border max-h-48 overflow-y-auto rounded-xl border border-border">
+                  {transactions
+                    .filter(tx => tx.type === 'charge')
+                    .map(tx => (
+                      <div key={tx.id} className="flex items-center justify-between px-3 py-2">
+                        <div>
+                          <p className="text-xs font-medium">{tx.description ?? 'Compra'}</p>
+                          <p className="text-xs text-muted-foreground">{formatarData(tx.created_at)}</p>
+                        </div>
+                        <span className="text-xs font-semibold tabular-nums text-red-600">
+                          {formatarMoeda(tx.amount)}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
             <SheetFooter>
               <Button
                 type="button"

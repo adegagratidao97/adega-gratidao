@@ -25,9 +25,12 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
 
   const load = useCallback(async (q?: string) => {
     setLoading(true)
-    const { data } = await listProducts(q || undefined, true)
-    setProducts(data ?? [])
-    setLoading(false)
+    try {
+      const { data } = await listProducts(q || undefined, true)
+      setProducts(data ?? [])
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
   }, [open, load])
 
   useEffect(() => {
-    if (!open) return
+    if (!open || search === '') return
     const timer = setTimeout(() => load(search), 200)
     return () => clearTimeout(timer)
   }, [search, open, load])
@@ -52,6 +55,7 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <Input
+              autoFocus
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar produto disponível..."
