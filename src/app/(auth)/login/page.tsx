@@ -1,4 +1,5 @@
 'use client'
+import { Suspense } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
@@ -20,10 +21,39 @@ function SubmitButton() {
   )
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams()
   const erro = searchParams.get('error')
 
+  return (
+    <form action={fazerLogin} className="space-y-3">
+      <Input
+        type="email"
+        name="email"
+        placeholder="E-mail"
+        className="bg-brand-dark border-white/10 text-white placeholder:text-white/30 focus-visible:ring-brand-gold"
+        required
+      />
+      <Input
+        type="password"
+        name="password"
+        placeholder="Senha"
+        className="bg-brand-dark border-white/10 text-white placeholder:text-white/30 focus-visible:ring-brand-gold"
+        required
+      />
+
+      {erro === 'credenciais-invalidas' && (
+        <p className="text-red-400 text-xs text-center">
+          E-mail ou senha incorretos.
+        </p>
+      )}
+
+      <SubmitButton />
+    </form>
+  )
+}
+
+export default function LoginPage() {
   return (
     <div className="min-h-screen bg-brand-black flex items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-8">
@@ -41,30 +71,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form action={fazerLogin} className="space-y-3">
-          <Input
-            type="email"
-            name="email"
-            placeholder="E-mail"
-            className="bg-brand-dark border-white/10 text-white placeholder:text-white/30 focus-visible:ring-brand-gold"
-            required
-          />
-          <Input
-            type="password"
-            name="password"
-            placeholder="Senha"
-            className="bg-brand-dark border-white/10 text-white placeholder:text-white/30 focus-visible:ring-brand-gold"
-            required
-          />
-
-          {erro === 'credenciais-invalidas' && (
-            <p className="text-red-400 text-xs text-center">
-              E-mail ou senha incorretos.
-            </p>
-          )}
-
-          <SubmitButton />
-        </form>
+        <Suspense>
+          <LoginForm />
+        </Suspense>
 
         <p className="text-center text-white/20 text-xs">
           Adega Gratidão © {new Date().getFullYear()}
