@@ -43,7 +43,7 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[75vh] flex flex-col p-0">
+      <SheetContent side="bottom" className="h-[85vh] flex flex-col p-0">
         <SheetHeader className="px-4 pt-4 pb-2 border-b border-border">
           <SheetTitle>Selecionar Produto</SheetTitle>
         </SheetHeader>
@@ -56,7 +56,6 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar produto disponível..."
               className="pl-9 bg-muted/50"
-              autoFocus
             />
           </div>
         </div>

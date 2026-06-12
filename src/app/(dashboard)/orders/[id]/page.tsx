@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, Scissors, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Plus, Scissors, CheckCircle, Home } from 'lucide-react'
 import { useOrder } from '@/hooks/useOrders'
 import { useOrderMutations } from '@/hooks/useOrders'
 import { StatusBadge } from '@/components/shared/StatusBadge'
@@ -194,6 +194,26 @@ export default function ComandaDetalhePage() {
       {/* Ações para comanda aberta */}
       {isOpen && (
         <div className="fixed bottom-16 md:bottom-0 left-0 right-0 md:relative bg-white border-t border-border md:border md:rounded-xl p-4 space-y-2 z-20 md:static">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-1.5"
+              onClick={() => router.push('/home')}
+            >
+              <Home className="w-3.5 h-3.5" />
+              Início
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-1.5"
+              onClick={() => router.push('/orders/new')}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Nova Comanda
+            </Button>
+          </div>
           <Button
             variant="outline"
             className="w-full gap-2"

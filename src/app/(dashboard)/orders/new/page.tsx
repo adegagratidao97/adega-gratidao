@@ -67,6 +67,8 @@ export default function NovaComandaPage() {
     const { data } = await getOpenOrderByClient(client.id)
     if (data) {
       setExistingOrderId(data.id)
+    } else {
+      setStep(2)
     }
   }
 
@@ -247,30 +249,7 @@ export default function NovaComandaPage() {
                 </Button>
               </div>
             </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand-dark flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 text-brand-gold" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm text-foreground">{selectedClient.name}</p>
-                  {selectedClient.phone && (
-                    <p className="text-xs text-muted-foreground">{selectedClient.phone}</p>
-                  )}
-                </div>
-                <button
-                  onClick={() => { setSelectedClient(null); setClientSearch('') }}
-                  className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <Button variant="gold" className="w-full" onClick={() => setStep(2)}>
-                Continuar para Produtos
-              </Button>
-            </div>
-          )}
+          ) : null}
 
           <ClientForm
             open={clientFormOpen}
