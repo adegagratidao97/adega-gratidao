@@ -46,7 +46,7 @@ export function ProductPicker({ open, onOpenChange, onSelect }: Props) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] flex flex-col p-0">
+      <SheetContent side="bottom" className="flex flex-col p-0" style={{ height: '85dvh' }}>
         <SheetHeader className="px-4 pt-4 pb-2 border-b border-border">
           <SheetTitle>Selecionar Produto</SheetTitle>
         </SheetHeader>
